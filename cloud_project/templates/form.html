@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Hospital Waiting Time Assistant</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f4f6f9;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            max-width: 480px;
+            margin: 40px auto;
+            background: #ffffff;
+            padding: 24px 28px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        h2 {
+            margin-top: 0;
+            text-align: center;
+            color: #333;
+        }
+        label {
+            display: block;
+            margin-top: 12px;
+            font-size: 14px;
+            color: #444;
+        }
+        input, select, button {
+            width: 100%;
+            padding: 8px 10px;
+            margin-top: 4px;
+            box-sizing: border-box;
+            border-radius: 4px;
+            border: 1px solid #ccc;
+            font-size: 14px;
+        }
+        button {
+            margin-top: 16px;
+            background-color: #2563eb;
+            color: #fff;
+            border: none;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #1d4ed8;
+        }
+        .result, .suggestion {
+            margin-top: 16px;
+            padding: 12px;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+        .result {
+            background: #e0f2fe;
+            color: #0f172a;
+        }
+        .suggestion {
+            background: #dcfce7;
+            color: #14532d;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h2>Waiting Time Assistant</h2>
+    <form method="post">
+        <label>Day of Week:</label>
+        <select name="day_name" required>
+            <option value="0">Monday</option>
+            <option value="1">Tuesday</option>
+            <option value="2">Wednesday</option>
+            <option value="3">Thursday</option>
+            <!-- Friday (4) is off -->
+            <option value="5">Saturday</option>
+            <option value="6">Sunday</option>
+        </select>
+
+        <label>Month:</label>
+        <select name="month" required>
+            <option value="1">January</option>
+            <option value="2">February</option>
+            <option value="3">March</option>
+            <option value="4">April</option>
+            <option value="5">May</option>
+            <option value="6">June</option>
+            <option value="7">July</option>
+            <option value="8">August</option>
+            <option value="9">September</option>
+            <option value="10">October</option>
+            <option value="11">November</option>
+            <option value="12">December</option>
+        </select>
+
+        <label>Hour (work hours only):</label>
+        <select name="hour" required>
+            <option value="8">08:00</option>
+            <option value="9">09:00</option>
+            <option value="10">10:00</option>
+            <option value="11">11:00</option>
+            <option value="12">12:00</option>
+            <option value="13">13:00</option>
+            <option value="14">14:00</option>
+            <option value="15">15:00</option>
+            <option value="16">16:00</option>
+            <option value="17">17:00</option>
+        </select>
+
+        <label>Days between scheduling and visit:</label>
+        <input type="number" name="days_between_schedule_and_visit" required>
+
+        <label>Sex:</label>
+        <select name="sex" required>
+            <option value="0">Female</option>
+            <option value="1">Male</option>
+        </select>
+
+        <label>Age:</label>
+        <input type="number" step="1" name="age" required>
+
+        <button type="submit">Predict & Suggest</button>
+    </form>
+
+    {% if prediction is defined %}
+    <div class="result">
+        <strong>Predicted waiting time for this slot:</strong>
+        {{ prediction }} minutes
+    </div>
+    {% endif %}
+
+    {% if better_local_hour is defined %}
+    <div class="suggestion">
+        <strong>Nearby suggestion (same day):</strong><br>
+        Moving this appointment from hour {{ current_hour }}:00
+        to hour {{ better_local_hour }}:00 could reduce the expected waiting time
+        from {{ current_pred }} to about {{ better_local_pred }} minutes.
+    </div>
+    {% endif %}
+
+    {% if better_global_hour is defined %}
+    <div class="suggestion">
+        <strong>Best hour in the day:</strong><br>
+        The model suggests hour {{ better_global_hour }}:00 as the lowest‑pressure time,
+        with an expected waiting time of about {{ better_global_pred }} minutes for this patient.
+    </div>
+    {% endif %}
+</div>
+</body>
+</html>

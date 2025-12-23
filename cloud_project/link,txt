@@ -1,0 +1,14 @@
+http://127.0.0.1:8000/form
+
+uvicorn app:app --reload
+
+
+docker run -p 8000:8000 youssef62x/hospital-scheduler:latest
+docker push youssef62x/hospital-scheduler:latest
+
+
+kubectl create deployment waiting-time-api --image=youssef62x/hospital-scheduler:latest
+
+
+
+docker ps
